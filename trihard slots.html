@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Trihard spin</title>
+		<style type="text/css">
+			#slots {
+				overflow: hidden;
+				width:358.9px;
+				height:104px;
+				
+			}
+			img {
+				width:100px;
+				height: 100px;
+			}
+			#slotmachine {
+				position: absolute;
+				width: 358.39px;
+				height:107px;
+			}
+			#slot1 {
+				position: relative;
+				top: 0px;
+			}
+			#slot2 {
+			    position: relative;
+				top: 0px;
+			}
+			#slot3 {
+				position: relative;
+				top: 0px;
+			}
+
+		</style>
+	</head>
+
+	<body>
+
+		<div id='slotmachine'>
+			<div id='slots'>
+	            <img id='slot1'>
+	            <img id='slot2'>
+	            <img id='slot3'>
+            </div>
+	        <button id='but' onclick="spin()">Spin!</button>
+	    </div>
+
+	</body>
+	<script type="text/javascript">
+	var slots = [Math.floor(Math.random()*5)+1, Math.floor(Math.random()*5)+1, Math.floor(Math.random()*5)+1]
+	document.getElementById('slotmachine').style.top = (window.innerHeight/2)-50 + 'px'
+	document.getElementById('slotmachine').style.left = (window.innerWidth/2)-179 + 'px'
+	        document.getElementById('slot1').src = `${slots[0]}.png`
+        document.getElementById('slot2').src = `${slots[1]}.png`
+        document.getElementById('slot3').src = `${slots[2]}.png`
+    var slotprocess = []
+    var slotmem = '00000'
+	function update(x){
+		x = [x[0],x[2], x[4]]
+		var toupdate = []
+        if (x[0] != slotmem[0]){
+            toupdate.push('slot1')
+        }
+        if (x[1] != slotmem[1]){
+            toupdate.push('slot2')
+        }
+        if (x[2] != slotmem[2]){
+            toupdate.push('slot3')
+        }
+        var d = 2
+        var f = 0
+        console.log(toupdate)
+        var c = setInterval(function(){
+        	
+        	if (d == 112){
+        		d = -120
+        	}
+            for (var i = 0;i<toupdate.length;i++){
+            	document.getElementById(toupdate[i]).style.top = d + 'px'
+            	if (d == -120){document.getElementById(toupdate[i]).src = `${x[parseInt(toupdate[i][4])-1]}.png`}
+            }
+
+            d = d + 2
+            f++
+            if (f == 115){clearInterval(c)}
+        },4)
+        slotmem = x
+
+
+	}
+
+	function add(z){
+		slotprocess.push(z)
+	}
+	function spin(){
+		document.getElementById('but').style.visibility = 'hidden';
+		slotprocess = []
+		for (var i = 0;i<slots.length;i++){
+            var spins = Math.floor(Math.random()*6)+6
+            while(spins > 0){
+            	for(var slot = i;slot<slots.length;slot++){
+            		if (slots[slot] == 6){
+            			slots[slot] = 1
+            		}else{
+            			slots[slot] = slots[slot] + 1
+            		}
+
+            	}
+                spins = spins - 1
+            	add(`${slots}`)
+           
+            }
+		}
+		var slotcurrprocess = 0
+		var x = setInterval(function(){
+            update(slotprocess[slotcurrprocess])
+            slotcurrprocess++
+            if (slotcurrprocess == slotprocess.length){
+            	setTimeout(function(){document.getElementById('but').style.visibility = 'visible';},460)
+            	clearInterval(x)
+            }
+		},460)
+	}	
+	</script>
+</html>
